@@ -11,6 +11,9 @@ const Admin = () => {
     const getAdmins = async () => {
       const response = await fetch(`http://localhost:5001/management/admins`, {
         method: "GET",
+        headers:{
+          'token': `${token}`
+        }
       });
       const data = await response.json();
       setAdmins(data)

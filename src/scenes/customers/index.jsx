@@ -11,6 +11,9 @@ const Customers = () => {
   const getCustomers = async () => {
     const response = await fetch(`http://localhost:5001/client/customers`, {
       method: "GET",
+      headers:{
+        'token': `${token}`
+      }
     });
     const data = await response.json();
     setCustomers(data)

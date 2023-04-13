@@ -11,6 +11,8 @@ import {
   useTheme,
   useMediaQuery,
 } from "@mui/material";
+import { useSelector } from "react-redux";
+import CustomToolbar from "components/CustomToolbar";
 import Header from "components/Header";
 const Tour = ({
   _id,
@@ -28,6 +30,7 @@ const Tour = ({
 }) => {
   const theme = useTheme();
   const [isExpanded, setIsExpanded] = useState(false);
+
   return (
     <Card
       sx={{
@@ -81,11 +84,18 @@ const Tour = ({
   );
 };
 const Tours = () => {
+  const theme = useTheme()
+  const [search, setSearch] = useState("");
+  const [searchInput, setSearchInput] = useState("");
   const isNonMobile = useMediaQuery("(min-width: 1000px)");
   const [tours, setTours] = useState([]);
+  const token = useSelector(state=>state.token)
   const getTours = async () => {
     const response = await fetch(`http://localhost:5001/client/tours`, {
       method: "GET",
+      headers:{
+        'token': `${token}`
+      }
     });
     const data = await response.json();
     setTours(data);
@@ -94,12 +104,35 @@ const Tours = () => {
     getTours();
   }, []); // eslint-disable-line react-hooks/exhaustive-deps
   if (!tours) return null;
-
   return (
     <Box m="1.5rem 2.5rem">
       <Header title="TOUR" subtitle="Danh sách tour du lịch" />
-
-      {tours ? (
+    <Box          height="80vh"
+        sx={{
+          "& .MuiDataGrid-root": {
+            border: "none",
+          },
+          "& .MuiDataGrid-cell": {
+            borderBottom: "none",
+          },
+          "& .MuiDataGrid-columnHeaders": {
+            backgroundColor: theme.palette.background.alt,
+            color: theme.palette.secondary[100],
+            borderBottom: "none",
+          },
+          "& .MuiDataGrid-virtualScroller": {
+            backgroundColor: theme.palette.light,
+          },
+          "& .MuiDataGrid-footerContainer": {
+            backgroundColor: theme.palette.background.alt,
+            color: theme.palette.secondary[100],
+            borderTop: "none",
+          },
+          "& .MuiDataGrid-toolbarContainer .MuiButton-text": {
+            color: `${theme.palette.secondary[200]} !important`,
+          },
+        }}>
+          <CustomToolbar router="/tours/create"/>
         <Box
           mt="20px"
           display="grid"
@@ -142,9 +175,7 @@ const Tours = () => {
             )
           )}
         </Box>
-      ) : (
-        <>Vui lòng đợi ...</>
-      )}
+        </Box>
     </Box>
   );
 };

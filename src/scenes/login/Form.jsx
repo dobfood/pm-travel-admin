@@ -27,10 +27,10 @@ const loginSchema = yup.object().shape({
 const initialValuesLogin = {
   email: "",
   password: "",
-};
+};  
 
 const Form = () => {
-  const { palette } = useTheme();
+  const theme = useTheme();
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const isNoneMobile = useMediaQuery("(min-width:600px))");
@@ -39,6 +39,7 @@ const Form = () => {
         method:"POST",
         headers:{"Content-Type": "application/json"},
         body:JSON.stringify(values),
+
     }
     );
     const loggedIn = await loggedInResponse.json();
@@ -53,7 +54,6 @@ const Form = () => {
   }
   const handleFormSubmit = async (values, onSubmitProps) => {
     await login(values,onSubmitProps)
-
   };
 
   return (
@@ -109,9 +109,10 @@ const Form = () => {
                     sx={{
                         m:"2rem 0",
                         p:"1rem",
-                        backGroundColor :palette.secondary.main,
-                        color:palette.background.alt,
-                        "&:hove":{color:palette.secondary.main}
+                        backgroundColor: theme.palette.background.alt,
+                        borderRadius: "0.55rem ",
+                            color:theme.palette.secondary.main,
+                            "&:hove":{color:theme.palette.secondary.main}
                     }}
                     >
                         Đăng nhập

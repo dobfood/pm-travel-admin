@@ -1,24 +1,47 @@
-import React, { useState } from "react";
+import React, { useState,useEffect } from "react";
 import { Box, useTheme } from "@mui/material";
 import { DataGrid } from "@mui/x-data-grid";
-import { useGetTransactionsQuery } from "state/api";
+// import { useGetTransactionsQuery } from "state/api";
+
 import Header from "components/Header";
 import DataGridCustomToolbar from "components/DataGridCustomToolbar";
+import { useSelector } from "react-redux";
 const Transactions = () => {
   const theme = useTheme();
 
   // value to be send to backend
+  const [transactions,setTransactions]=useState([])
   const [page, setPage] = useState(0);
   const [pageSize, setPageSize] = useState(20);
   const [sort, setSort] = useState({});
   const [search, setSearch] = useState("");
   const [searchInput, setSearchInput] = useState("");
-  const { data, isLoading } = useGetTransactionsQuery({
-    page,
-    pageSize,
-    sort: JSON.stringify(sort),
-    search,
-  });
+  // const { data, isLoading } = useGetTransactionsQuery({
+  //   page,
+  //   pageSize,
+  //   sort: JSON.stringify(sort),
+  //   search,
+  // });
+  const token = useSelector(state=>state.token)
+  const getTransactions = async () => {
+    const response = await fetch(`http://localhost:5001/client/transactions`, {
+      method: "GET",
+      params: { page, pageSize, sort, search },
+      headers:{
+        'token': `${token}`
+      }
+    });
+    const data = await response.json();
+    setTransactions(data)
+  };
+  useEffect(() => {
+    getTransactions({ page,
+        pageSize,
+        sort: JSON.stringify(sort),
+        search,
+       });
+  }, []); // eslint-disable-line react-hooks/exhaustive-deps
+  if (!transactions) return null;
   const columns = [
     {
       field: "_id",
@@ -94,11 +117,10 @@ const Transactions = () => {
         }}
       >
         <DataGrid
-          loading={isLoading || !data}
           getRowId={(row) => row._id}
-          rows={(data && data.transactions) || []}
+          rows={(transactions) || []}
           columns={columns}
-          rowCount={(data && data.total) || []}
+          rowCount={(transactions) || []}
           rowPerPageOptions={[20, 50, 100]}
           pagination
           page={page}
