@@ -13,7 +13,7 @@ import Swal from 'sweetalert2';
 import {CKEditor} from "ckeditor4-react";
 import { Formik } from "formik";
 import * as yup from "yup";
-import { useNavigate } from "react-router-dom";
+import {useParams, useNavigate } from "react-router-dom";
 import FlexBetween from "components/FlexBetween";
 import { ref, uploadBytes, getDownloadURL } from "firebase/storage";
 import { storage } from "../../firebase-config";
@@ -51,7 +51,22 @@ const initialValuesTour = {
   maxNumber: 0,
   description:""
 };
-const Create = () => {
+const setValues = (data) => {
+    initialValuesTour.category = data.category;
+    initialValuesTour.title = data.title;
+    initialValuesTour.departure = data.departure;
+    initialValuesTour.destination = data.destination;
+    initialValuesTour.numberDay = data.numberDay;
+    initialValuesTour.price = data.price;
+    initialValuesTour.content = data.content;
+    initialValuesTour.images = data.images;
+    initialValuesTour.rating = data.rating;
+    initialValuesTour.thumbnail = data.thumbnail;
+    initialValuesTour.codeTour = data.codeTour;
+    initialValuesTour.maxNumber = data.maxNumber;
+    initialValuesTour.description = data.description;
+  }
+const Update = () => {
   const { palette } = useTheme();
   const theme = useTheme();
   const typeCategory = [
@@ -60,6 +75,7 @@ const Create = () => {
     { value: "tourResort", text: "Du lịch nghỉ dưỡng" },
     { value: "tourDiscovery", text: "Du lịch khám phá" },
   ];
+  const {id} = useParams()
   const isNoneMobile = useMediaQuery("(min-width:600px))");
   const navigate = useNavigate();
   const token = useSelector(state=>state.token)
@@ -88,6 +104,18 @@ const Create = () => {
       });
     });
   };
+
+  const getTourById =async()=>{
+    const response = await fetch(`http://localhost:5001/client/tours/${id}`, {
+      method: "GET",
+      headers:{
+        'token': `${token}`
+      },
+    });
+    const data = await response.json();
+    setValues(data);
+}
+
   const createTour = async (values, onSubmitProps) => {
     const formData = new FormData();
     for (let value in values) {
@@ -95,7 +123,7 @@ const Create = () => {
     }
     formData.append("thumbnail", values.thumbnail.name);
     const createTourInResponse = await fetch(
-      "http://localhost:5001/client/tours",
+      `http://localhost:5001/client/tours/${id}`,
       {
         headers:{
           'token': `${token}`
@@ -110,11 +138,9 @@ const Create = () => {
       Swal.fire({
         icon: 'success',
         title: 'Thành công!',
-        text: 'Đã thêm mới thành công.',
+        text: 'Đã chinh sửa thành công.',
       })
       navigate("/tours");
-    }else{
-      console.log(create)
     }
   };
   const handleFormSubmit = async (values, onSubmitProps) => {
@@ -128,13 +154,14 @@ const Create = () => {
     setProvince(data)
   };
   useEffect(() => {
+    getTourById();
     getProvince();
   }, []); // eslint-disable-line react-hooks/exhaustive-deps
   if (!province) return null;
   return (
     <Box m="1.5rem 2.5rem">
         <FlexBetween width="100%">
-      <Header title="TOUR" subtitle="Thêm mới tour du lịch" />
+      <Header title="TOUR" subtitle="Chỉnh sửa tour du lịch" />
       <span sx={{ mb: " 0.5rem", width: "15rem" }}></span>
       <Button
          type="button"
@@ -318,7 +345,6 @@ const Create = () => {
                   onDrop={(acceptedFiles) => {
                     setImageUpload(acceptedFiles);
                     uploadThumbnail();
-                    console.log(values)
                   }}
                 >
                   {({ getRootProps, getInputProps }) => (
@@ -351,7 +377,6 @@ const Create = () => {
                   acceptedFiles=".jpg,.jpeg,.png"
                   multiple={true}
                   onDrop={(acceptedFiles) => {
-                    console.log(acceptedFiles);
                     setImageUpload(acceptedFiles[0]);
                     uploadImage();
                   }}
@@ -401,4 +426,4 @@ const Create = () => {
   );
 };
 
-export default Create;
+export default Update;

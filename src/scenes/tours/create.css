@@ -1,0 +1,14 @@
+/* Thiết lập CKEditor có chiều rộng toàn màn hình */
+.cke_editable {
+    width: 100%;
+    max-width: 100%;
+  }
+  /* Thay đổi màu nền */
+.cke_editable {
+    background-color: hsl(0, 72%, 50%);
+  }
+  
+  /* Thay đổi màu chữ */
+  .cke_editable {
+    color: #000;
+  }
