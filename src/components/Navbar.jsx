@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState } from 'react';
 import {
   LightModeOutlined,
   DarkModeOutlined,
@@ -6,11 +6,11 @@ import {
   Search,
   SettingsOutlined,
   ArrowDropDownOutlined,
-} from "@mui/icons-material";
-import FlexBetween from "components/FlexBetween";
-import { useDispatch } from "react-redux";
-import { setLogout, setMode } from "state";
-import profileImage from "assets/z3887572277545_175ce1a7a3f44f9c912c8e91b507c24c (1).jpg";
+} from '@mui/icons-material';
+import FlexBetween from 'components/FlexBetween';
+import { useDispatch } from 'react-redux';
+import { setLogout, setMode } from 'state';
+import profileImage from 'assets/z3887572277545_175ce1a7a3f44f9c912c8e91b507c24c (1).jpg';
 import {
   AppBar,
   Button,
@@ -22,7 +22,7 @@ import {
   useTheme,
   Typography,
   Menu,
-} from "@mui/material";
+} from '@mui/material';
 function Navbar({ user, isSidebarOpen, setIsSidebarOpen }) {
   const dispatch = useDispatch();
   const theme = useTheme();
@@ -31,8 +31,8 @@ function Navbar({ user, isSidebarOpen, setIsSidebarOpen }) {
   const handleClick = (event) => setAnchorEl(event.currentTarget);
   const handleClose = () => setAnchorEl(null);
   return (
-    <AppBar sx={{ position: "static", background: "none", boxShadow: "none" }}>
-      <Toolbar sx={{ justifyContent: "space-between" }}>
+    <AppBar sx={{ position: 'static', background: 'none', boxShadow: 'none' }}>
+      <Toolbar sx={{ justifyContent: 'space-between' }}>
         {/*/ LEFT SIDE */}
         <FlexBetween>
           <IconButton onClick={() => setIsSidebarOpen(!isSidebarOpen)}>
@@ -53,24 +53,24 @@ function Navbar({ user, isSidebarOpen, setIsSidebarOpen }) {
         {/*/ LEFT SIDE */}
         <FlexBetween gap="1.5rem">
           <IconButton onClick={() => dispatch(setMode())}>
-            {theme.palette.mode === "dark" ? (
-              <DarkModeOutlined sx={{ fontSize: "25px" }} />
+            {theme.palette.mode === 'dark' ? (
+              <DarkModeOutlined sx={{ fontSize: '25px' }} />
             ) : (
-              <LightModeOutlined sx={{ fontSize: "25px" }} />
+              <LightModeOutlined sx={{ fontSize: '25px' }} />
             )}
           </IconButton>
           <IconButton>
-            <SettingsOutlined sx={{ fontSize: "25px" }} />
+            <SettingsOutlined sx={{ fontSize: '25px' }} />
           </IconButton>
           <FlexBetween>
             <Button
               onClick={handleClick}
               sx={{
-                display: "flex",
-                justifyContent: "space-between",
-                alignItems: "center",
-                textTransform: "none",
-                gap: "1rem",
+                display: 'flex',
+                justifyContent: 'space-between',
+                alignItems: 'center',
+                textTransform: 'none',
+                gap: '1rem',
               }}
             >
               <Box
@@ -80,7 +80,7 @@ function Navbar({ user, isSidebarOpen, setIsSidebarOpen }) {
                 height="32px"
                 width="32px"
                 borderRadius="50%"
-                sx={{ objectFit: "cover" }}
+                sx={{ objectFit: 'cover' }}
               />
               <Box textAlign="left">
                 <Typography
@@ -99,16 +99,23 @@ function Navbar({ user, isSidebarOpen, setIsSidebarOpen }) {
               </Box>
 
               <ArrowDropDownOutlined
-                sx={{ color: theme.palette.secondary[300], fontSize: "25px" }}
+                sx={{ color: theme.palette.secondary[300], fontSize: '25px' }}
               />
             </Button>
             <Menu
               anchorEl={anchorEl}
               open={isOpen}
               onClose={handleClose}
-              anchorOrigin={{ vertical: "bottom", horizontal: "center" }}
+              anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}
             >
-              <MenuItem onClick={()=>{dispatch(setLogout())}}>Đăng xuất</MenuItem>
+              <MenuItem
+                onClick={() => {
+                  dispatch(setLogout());
+                  localStorage.removeItem('access-token');
+                }}
+              >
+                Đăng xuất
+              </MenuItem>
             </Menu>
           </FlexBetween>
         </FlexBetween>

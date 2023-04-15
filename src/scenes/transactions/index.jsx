@@ -24,7 +24,7 @@ const Transactions = () => {
   // });
   const token = useSelector(state=>state.token)
   const getTransactions = async () => {
-    const response = await fetch(`http://localhost:5001/client/transactions`, {
+    const response = await fetch(`http://192.168.1.3:5001/client/transactions`, {
       method: "GET",
       params: { page, pageSize, sort, search },
       headers:{

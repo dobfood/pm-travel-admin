@@ -1,68 +1,54 @@
-import { useEffect,useState } from "react";
-import { useDispatch, useSelector } from "react-redux";
-import { Box, useTheme } from "@mui/material";
-import Header from "components/Header";
-import { DataGrid } from "@mui/x-data-grid";
+import { Box, useTheme } from '@mui/material';
+import Header from 'components/Header';
+import { DataGrid } from '@mui/x-data-grid';
+import { useCustomers } from 'hooks/swr';
 
 const Customers = () => {
-  const [customers, setCustomers] = useState([]);
-  const token = useSelector((state) => state.token);
   const theme = useTheme();
-  const getCustomers = async () => {
-    const response = await fetch(`http://localhost:5001/client/customers`, {
-      method: "GET",
-      headers:{
-        'token': `${token}`
-      }
-    });
-    const data = await response.json();
-    setCustomers(data)
-  };
-  useEffect(() => {
-    getCustomers();
-  }, []); // eslint-disable-line react-hooks/exhaustive-deps
+  const { customers } = useCustomers();
+
   if (!customers) return null;
   const columns = [
     {
-      field: "_id",
-      headerName: "ID",
+      field: '_id',
+      headerName: 'ID',
       flex: 1,
     },
     {
-      field: "avatar",
-      headerName: "Avatar",
+      field: 'avatar',
+      headerName: 'Avatar',
       flex: 1,
     },
     ,
     {
-      field: "fullName",
-      headerName: "Tên người dùng",
+      field: 'fullName',
+      headerName: 'Tên người dùng',
       flex: 0.5,
     },
     {
-      field: "email",
-      headerName: "Email",
+      field: 'email',
+      headerName: 'Email',
       flex: 1,
     },
     {
-      field: "phone",
-      headerName: "Số điện thoại",
+      field: 'phone',
+      headerName: 'Số điện thoại',
       flex: 0.5,
       renderCell: (params) => {
         return params.value.replace(
           /^(\d{2})(\d{3})(\d{3})(\d{3})/,
-          "($1)$2-$3-$4"
+          '($1)$2-$3-$4'
         );
       },
     },
     {
-      field: "loginType",
-      headerName: "Loại đăng ký",
+      field: 'loginType',
+      headerName: 'Loại đăng ký',
       flex: 1,
     },
     {
-      field: "role",
-      headerName: "Vai trò",
+      field: 'role',
+      headerName: 'Vai trò',
       flex: 0.5,
     },
   ];
@@ -73,26 +59,26 @@ const Customers = () => {
         mt="40px"
         height="75vh"
         sx={{
-          "& .MuiDataGrid-root": {
-            border: "none",
+          '& .MuiDataGrid-root': {
+            border: 'none',
           },
-          "& .MuiDataGrid-cell": {
-            borderBottom: "none",
+          '& .MuiDataGrid-cell': {
+            borderBottom: 'none',
           },
-          "& .MuiDataGrid-columnHeaders": {
+          '& .MuiDataGrid-columnHeaders': {
             backgroundColor: theme.palette.background.alt,
             color: theme.palette.secondary[100],
-            borderBottom: "none",
+            borderBottom: 'none',
           },
-          "& .MuiDataGrid-virtualScroller": {
+          '& .MuiDataGrid-virtualScroller': {
             backgroundColor: theme.palette.light,
           },
-          "& .MuiDataGrid-footerContainer": {
+          '& .MuiDataGrid-footerContainer': {
             backgroundColor: theme.palette.background.alt,
             color: theme.palette.secondary[100],
-            borderTop: "none",
+            borderTop: 'none',
           },
-          "& .MuiDataGrid-toolbarContainer .MuiButton-text": {
+          '& .MuiDataGrid-toolbarContainer .MuiButton-text': {
             color: `${theme.palette.secondary[200]} !important`,
           },
         }}
