@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import {
   Box,
   Card,
@@ -11,11 +11,9 @@ import {
   useTheme,
   useMediaQuery,
 } from '@mui/material';
-import { useSelector } from 'react-redux';
 import CustomToolbar from 'components/CustomToolbar';
 import Header from 'components/Header';
 import { useNavigate } from 'react-router-dom';
-import { gridColumnGroupsLookupSelector } from '@mui/x-data-grid';
 import { useTours } from 'hooks/swr';
 import http from 'fetcher';
 

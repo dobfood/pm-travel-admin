@@ -27,6 +27,7 @@ function App() {
           <SWRConfig
             value={{
               shouldRetryOnError: false,
+              revalidateOnFocus: false,
             }}
           >
             <Routes>
@@ -39,7 +40,7 @@ function App() {
                 <Route path="/dashboard" element={<Dashboard />} />
                 <Route path="/tours" element={<Tour />} />
                 <Route path="/tours/create" element={<Create />} />
-                <Route path="/tours/:id" element={<Update />} />
+                <Route path="/tours/:id" element={<Create />} />
                 <Route path="/customers" element={<Customer />} />
                 <Route path="/transactions" element={<Transactions />} />
                 <Route path="/breakdown" element={<Breakdown />} />
