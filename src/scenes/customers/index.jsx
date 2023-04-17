@@ -1,11 +1,11 @@
 import { Box, useTheme } from '@mui/material';
 import Header from 'components/Header';
 import { DataGrid } from '@mui/x-data-grid';
-import { useCustomers } from 'hooks/swr';
+import { useUsers } from 'hooks/swr';
 
 const Customers = () => {
   const theme = useTheme();
-  const { customers } = useCustomers();
+  const { users: customers } = useUsers('user');
 
   if (!customers) return null;
   const columns = [
@@ -19,7 +19,6 @@ const Customers = () => {
       headerName: 'Avatar',
       flex: 1,
     },
-    ,
     {
       field: 'fullName',
       headerName: 'Tên người dùng',
@@ -41,17 +40,8 @@ const Customers = () => {
         );
       },
     },
-    {
-      field: 'loginType',
-      headerName: 'Loại đăng ký',
-      flex: 1,
-    },
-    {
-      field: 'role',
-      headerName: 'Vai trò',
-      flex: 0.5,
-    },
   ];
+
   return (
     <Box m="1.5rem 2.5rem">
       <Header title="KHÁCH HÀNG" subtitle="Danh sách khách hàng" />
