@@ -3,7 +3,7 @@ import useSWR from 'swr';
 
 export const useTour = (id) => {
   const { data, error, isLoading, mutate } = useSWR(
-    id ? `/client/tours/${id}` : null,
+    id ? `tour/${id}` : null,
     (url) => http.get(url).then((res) => res.data)
   );
 

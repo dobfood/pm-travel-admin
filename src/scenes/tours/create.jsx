@@ -94,6 +94,8 @@ const Create = () => {
 
   const uploadImage = async () => {
     try {
+      if (!imageFiles && !tour) return false;
+      if (!imageFiles && tour) return true;
       const imagesUrlList = Promise.all(
         imageFiles.map(async (img) => {
           const imageRef = ref(storage, `pm-travel/images/${img.name}`);
@@ -111,7 +113,8 @@ const Create = () => {
 
   const uploadThumbnail = async () => {
     try {
-      if (!thumbnailFile) return false;
+      if (!thumbnailFile && !tour) return false;
+      if (!thumbnailFile && tour) return true;
       const imageRef = ref(
         storage,
         `pm-travel/thumbnail/${thumbnailFile.name}`
@@ -136,10 +139,11 @@ const Create = () => {
 
       if (!images) return;
 
-      values.thumbnail = thumbnail;
-      values.images = images;
-      if (!tour) await http.post('/client/tours', values);
-      else await http.post(`/client/tours/${id}`, values);
+      if (typeof thumbnail !== 'boolean') values.thumbnail = thumbnail;
+      if (typeof images !== 'boolean') values.images = images;
+
+      if (!tour) await http.post('/tour', values);
+      else await http.patch(`/tour/${id}`, values);
 
       onSubmitProps.resetForm();
       Swal.fire({
