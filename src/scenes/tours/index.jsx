@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import {
   Box,
   Card,
@@ -11,11 +11,9 @@ import {
   useTheme,
   useMediaQuery,
 } from '@mui/material';
-import { useSelector } from 'react-redux';
 import CustomToolbar from 'components/CustomToolbar';
 import Header from 'components/Header';
 import { useNavigate } from 'react-router-dom';
-import { gridColumnGroupsLookupSelector } from '@mui/x-data-grid';
 import { useTours } from 'hooks/swr';
 import http from 'fetcher';
 
@@ -41,11 +39,8 @@ const Tour = (props) => {
 
   const deleteTour = async (id) => {
     try {
-      const res = await http.delete(`/client/tours/${id}`);
-      console.log(res);
-      if (res.status === 204) {
-        mutate();
-      }
+      await http.delete(`/tour/${id}`);
+      mutate();
     } catch (error) {
       console.log(error);
     }
@@ -99,15 +94,15 @@ const Tour = (props) => {
 
       <Collapse
         in={isExpanded}
-        timeOut="auto"
+        timeout="auto"
         unmountOnExit
         sx={{ color: theme.palette.neutral[300] }}
       >
         <CardContent>
           <Typography>id: {_id}</Typography>
-          <Typography>Danh thu hằng năm : {stat.yearlySalesTotal}</Typography>
+          <Typography>Danh thu hằng năm : {stat?.yearlySalesTotal}</Typography>
           <Typography>
-            Tổng số lượng đặt tour: {stat.yearlyTotalSoldUnits}
+            Tổng số lượng đặt tour: {stat?.yearlyTotalSoldUnits}
           </Typography>
         </CardContent>
       </Collapse>

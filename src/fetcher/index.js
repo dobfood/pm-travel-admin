@@ -12,7 +12,7 @@ http.interceptors.request.use((config) => {
 
   if (token) {
     config.headers = {
-      token: `${token}`,
+      Authorization: `Bearer ${token}`,
     };
   }
   return config;
@@ -23,7 +23,7 @@ http.interceptors.response.use(
     return res;
   },
   (error) => {
-    Promise.reject(error);
+    return Promise.reject(error);
   }
 );
 

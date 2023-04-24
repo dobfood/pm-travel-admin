@@ -1,23 +1,20 @@
-import { createSlice } from "@reduxjs/toolkit";
+import { createSlice } from '@reduxjs/toolkit';
 const initialState = {
-  mode: "dark",
+  mode: 'dark',
   user: null,
-  token: null,
 };
 export const globalSlice = createSlice({
-  name: "global",
+  name: 'global',
   initialState,
   reducers: {
     setMode: (state) => {
-      state.mode = state.mode === "light" ? "dark" : "light";
+      state.mode = state.mode === 'light' ? 'dark' : 'light';
     },
     setLogin: (state, action) => {
       state.user = action.payload.user;
-      state.token = action.payload.token;
     },
     setLogout: (state) => {
       state.user = null;
-      state.token = null;
     },
   },
 });

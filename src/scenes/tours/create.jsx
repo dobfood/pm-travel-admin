@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import {
   Box,
   Button,
@@ -13,16 +13,16 @@ import Swal from 'sweetalert2';
 import { CKEditor } from 'ckeditor4-react';
 import { Formik } from 'formik';
 import * as yup from 'yup';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import FlexBetween from 'components/FlexBetween';
 import { ref, uploadBytes, getDownloadURL } from 'firebase/storage';
 import { storage } from '../../firebase-config';
 import Dropzone from 'react-dropzone';
 import EditOutlinedIcon from '@mui/icons-material/EditOutlined';
-import { useSelector } from 'react-redux';
 import Header from 'components/Header';
-import { useProvinces } from 'hooks/swr';
+import { useProvinces, useTour } from 'hooks/swr';
 import http from 'fetcher';
+
 const tourSchema = yup.object().shape({
   category: yup.string().required('Vui lòng nhập trường này'),
   title: yup.string().required('Vui lòng nhập trường này'),
@@ -55,6 +55,7 @@ const tourSchema = yup.object().shape({
     .required('Vui lòng nhập trường này')
     .moreThan(0, 'Vui lòng không nhâp giá trị âm'),
 });
+
 const initialValuesTour = {
   category: '',
   title: '',
@@ -70,54 +71,79 @@ const initialValuesTour = {
   maxNumber: 0,
   description: '',
 };
+
+const typeCategory = [
+  { value: 'tourCultural', text: 'Du lịch văn hóa' },
+  { value: 'tourEco', text: 'Du lịch sinh thái' },
+  { value: 'tourResort', text: 'Du lịch nghỉ dưỡng' },
+  { value: 'tourDiscovery', text: 'Du lịch khám phá' },
+];
+
 const Create = () => {
   const { palette } = useTheme();
   const theme = useTheme();
-  const typeCategory = [
-    { value: 'tourCultural', text: 'Du lịch văn hóa' },
-    { value: 'tourEco', text: 'Du lịch sinh thái' },
-    { value: 'tourResort', text: 'Du lịch nghỉ dưỡng' },
-    { value: 'tourDiscovery', text: 'Du lịch khám phá' },
-  ];
   const isNoneMobile = useMediaQuery('(min-width:600px))');
   const navigate = useNavigate();
-  const token = useSelector((state) => state.token);
-  const [images, setImages] = useState();
-  const [imageUpload, setImageUpload] = useState();
 
+  const { id } = useParams();
+  const { tour } = useTour(id);
   const { provinces = [] } = useProvinces();
 
-  const uploadImage = async () => {
-    for (let i = 0; i < imageUpload.length; i++) {
-      const imageRef = ref(storage, `/images/${imageUpload[i].name}`);
+  const [imageFiles, setImageFiles] = useState();
+  const [thumbnailFile, setThumbnailFile] = useState();
 
-      const result = await uploadBytes(imageRef, imageUpload[i])
-        .then(() => {
-          console.log('success');
+  const uploadImage = async () => {
+    try {
+      if (!imageFiles && !tour) return false;
+      if (!imageFiles && tour) return true;
+      const imagesUrlList = Promise.all(
+        imageFiles.map(async (img) => {
+          const imageRef = ref(storage, `pm-travel/images/${img.name}`);
+
+          const snapshot = await uploadBytes(imageRef, img);
+          const url = await getDownloadURL(snapshot.ref);
+          return { url, name: img.name };
         })
-        .catch((error) => {
-          console.log('error');
-        });
+      );
+      return imagesUrlList;
+    } catch (error) {
+      return false;
     }
   };
+
   const uploadThumbnail = async () => {
-    if (!imageUpload) return;
-    const imageRef = ref(storage, `pm-travel/thumbnail/${imageUpload.name}`);
-    await uploadBytes(imageRef, imageUpload).then((snapshot) => {
-      getDownloadURL(snapshot.ref).then((url) => {
-        console.log(url);
-      });
-    });
+    try {
+      if (!thumbnailFile && !tour) return false;
+      if (!thumbnailFile && tour) return true;
+      const imageRef = ref(
+        storage,
+        `pm-travel/thumbnail/${thumbnailFile.name}`
+      );
+      const snapshot = await uploadBytes(imageRef, thumbnailFile);
+      const url = await getDownloadURL(snapshot.ref);
+      return {
+        url,
+        name: thumbnailFile.name,
+      };
+    } catch (error) {
+      return false;
+    }
   };
 
   const handleFormSubmit = async (values, onSubmitProps) => {
     try {
-      const formData = new FormData();
-      for (let value in values) {
-        formData.append(value, values[value]);
-      }
-      formData.append('thumbnail', values.thumbnail.name);
-      await http.post('/client/tours', formData);
+      const thumbnail = await uploadThumbnail();
+      if (!thumbnail) return;
+
+      const images = await uploadImage();
+
+      if (!images) return;
+
+      if (typeof thumbnail !== 'boolean') values.thumbnail = thumbnail;
+      if (typeof images !== 'boolean') values.images = images;
+
+      if (!tour) await http.post('/tour', values);
+      else await http.patch(`/tour/${id}`, values);
 
       onSubmitProps.resetForm();
       Swal.fire({
@@ -138,7 +164,10 @@ const Create = () => {
   return (
     <Box m="1.5rem 2.5rem">
       <FlexBetween width="100%">
-        <Header title="TOUR" subtitle="Thêm mới tour du lịch" />
+        <Header
+          title="TOUR"
+          subtitle={!tour ? 'Thêm mới tour du lịch' : 'Chỉnh sửa tour du lịch'}
+        />
         <span sx={{ mb: ' 0.5rem', width: '15rem' }}></span>
         <Button
           type="button"
@@ -159,8 +188,9 @@ const Create = () => {
       </FlexBetween>
       <Formik
         onSubmit={handleFormSubmit}
-        initialValues={initialValuesTour}
+        initialValues={tour ? tour : initialValuesTour}
         validationSchema={tourSchema}
+        enableReinitialize
       >
         {({
           values,
@@ -169,7 +199,6 @@ const Create = () => {
           handleBlur,
           handleChange,
           handleSubmit,
-          setFieldValue,
         }) => (
           <form onSubmit={handleSubmit}>
             <Box
@@ -326,9 +355,7 @@ const Create = () => {
                   acceptedFiles=".jpg,.jpeg,.png"
                   multiple={false}
                   onDrop={(acceptedFiles) => {
-                    setImageUpload(acceptedFiles);
-                    uploadThumbnail();
-                    console.log(values);
+                    setThumbnailFile(acceptedFiles[0]);
                   }}
                 >
                   {({ getRootProps, getInputProps }) => (
@@ -339,11 +366,15 @@ const Create = () => {
                       sx={{ '&:hover': { cursor: 'pointer' } }}
                     >
                       <input {...getInputProps()} />
-                      {!values.thumbnail ? (
+                      {!thumbnailFile && !tour ? (
                         <p>Thêm hình ảnh tại đây</p>
                       ) : (
                         <FlexBetween>
-                          <Typography>{values.thumbnail}</Typography>
+                          <Typography>
+                            {thumbnailFile
+                              ? thumbnailFile.name
+                              : tour.thumbnail.name}
+                          </Typography>
                           <EditOutlinedIcon />
                         </FlexBetween>
                       )}
@@ -361,9 +392,7 @@ const Create = () => {
                   acceptedFiles=".jpg,.jpeg,.png"
                   multiple={true}
                   onDrop={(acceptedFiles) => {
-                    console.log(acceptedFiles);
-                    setImageUpload(acceptedFiles[0]);
-                    uploadImage();
+                    setImageFiles(acceptedFiles);
                   }}
                 >
                   {({ getRootProps, getInputProps }) => (
@@ -374,11 +403,15 @@ const Create = () => {
                       sx={{ '&:hover': { cursor: 'pointer' } }}
                     >
                       <input {...getInputProps()} />
-                      {!values.images ? (
+                      {!imageFiles && !tour ? (
                         <p>Thêm hình ảnh nhỏ </p>
                       ) : (
                         <FlexBetween>
-                          <Typography>{values.images}</Typography>
+                          <Typography>
+                            {imageFiles
+                              ? imageFiles.map((img) => img.name).join(', ')
+                              : tour.images.map((img) => img.name).join(', ')}
+                          </Typography>
                           <EditOutlinedIcon />
                         </FlexBetween>
                       )}
@@ -401,7 +434,7 @@ const Create = () => {
                   '&:hove': { color: theme.palette.secondary.main },
                 }}
               >
-                Thêm mới
+                {!tour ? 'Thêm mới' : 'Lưu'}
               </Button>
             </Box>
           </form>

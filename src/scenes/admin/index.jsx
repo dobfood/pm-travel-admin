@@ -2,12 +2,12 @@ import { Box, useTheme } from '@mui/material';
 import { DataGrid } from '@mui/x-data-grid';
 import Header from 'components/Header';
 import CustomColumnMenu from 'components/DataGridCustomColumnMenu';
-import { useAdmins } from 'hooks/swr';
+import { useUsers } from 'hooks/swr';
 
 const Admin = () => {
   const theme = useTheme();
 
-  const { admins } = useAdmins();
+  const { users: admins } = useUsers('admin');
 
   if (!admins) return null;
 
@@ -45,21 +45,11 @@ const Admin = () => {
         );
       },
     },
-    {
-      field: 'loginType',
-      headerName: 'Loại đăng ký',
-      flex: 1,
-    },
-    {
-      field: 'role',
-      headerName: 'Vai trò',
-      flex: 0.5,
-    },
   ];
 
   return (
     <Box m="1.5rem 2.5rem">
-      <Header title="ADMIN" subtitle="Danh sách khách hàng" />
+      <Header title="ADMIN" subtitle="Danh sách admin" />
       <Box
         mt="40px"
         height="75vh"

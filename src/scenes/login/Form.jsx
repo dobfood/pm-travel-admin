@@ -37,14 +37,13 @@ const Form = () => {
   const isNoneMobile = useMediaQuery('(min-width:600px)');
   const login = async (values, onSubmitProps) => {
     try {
-      const { data } = await http.post('/auth/login', values);
+      const { data } = await http.post('/auth/signin', values);
 
       onSubmitProps.resetForm();
-      localStorage.setItem('access-token', data.token);
+      localStorage.setItem('access-token', data.accessToken);
       dispatch(
         setLogin({
-          user: data.user,
-          token: data.token,
+          user: data,
         })
       );
       navigate('/dashboard');

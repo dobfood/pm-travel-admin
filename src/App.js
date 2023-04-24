@@ -19,7 +19,7 @@ import { SWRConfig } from 'swr';
 function App() {
   const mode = useSelector((state) => state.mode);
   const theme = useMemo(() => createTheme(themeSettings(mode)), [mode]);
-  const isAuth = Boolean(useSelector((state) => state.token));
+  const isAuth = Boolean(useSelector((state) => state.user));
   return (
     <div className="app">
       <BrowserRouter>
@@ -28,6 +28,7 @@ function App() {
           <SWRConfig
             value={{
               shouldRetryOnError: false,
+              revalidateOnFocus: false,
             }}
           >
             <Routes>
@@ -40,7 +41,7 @@ function App() {
                 <Route path="/dashboard" element={<Dashboard />} />
                 <Route path="/tours" element={<Tour />} />
                 <Route path="/tours/create" element={<Create />} />
-                <Route path="/tours/:id" element={<Update />} />
+                <Route path="/tours/:id" element={<Create />} />
                 <Route path="/customers" element={<Customer />} />
                 <Route path="/transactions" element={<Transactions />} />
                 <Route path="/order" element={<Order />} />

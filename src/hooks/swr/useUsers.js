@@ -1,9 +1,9 @@
 import useSWR from 'swr';
 import http from 'fetcher';
 
-export const useTransactions = (role) => {
+export const useUsers = (role) => {
   const { data, error, isLoading, mutate } = useSWR(
-    '/transaction',
+    '/user/find-by-role',
     (url) =>
       http
         .get(url, {
@@ -15,7 +15,7 @@ export const useTransactions = (role) => {
   );
 
   return {
-    transactions: data,
+    users: data,
     isLoading,
     error,
     mutate,
