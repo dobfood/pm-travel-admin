@@ -38,7 +38,7 @@ const navItems = [
   { link: "tours", text: "Tour", icon: <LuggageOutlined /> },
   { link: "customers", text: "Khách hàng", icon: <Groups2Outlined /> },
   { link: "transactions", text: "Hóa đơn", icon: <ReceiptLongOutlined /> },
-  { link: "", text: "Đặt tour", icon: <HomeOutlined /> },
+  { link: "order", text: "Đặt tour", icon: <HomeOutlined /> },
   { link: "", text: "Thông báo", icon: <NotificationsOutlined /> },
   { text: "Thống kê", icon: null },
   { link: "", text: "Tổng quan", icon: <PointOfSaleOutlined /> },
