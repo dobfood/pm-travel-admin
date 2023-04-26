@@ -9,6 +9,8 @@ import {
   MenuItem,
 } from '@mui/material';
 import './create.css';
+import DatePicker from 'react-datepicker';
+import 'react-datepicker/dist/react-datepicker.css';
 import Swal from 'sweetalert2';
 import { CKEditor } from 'ckeditor4-react';
 import { Formik } from 'formik';
@@ -38,7 +40,7 @@ const tourSchema = yup.object().shape({
     .moreThan(0, 'Vui lòng không nhâp giá trị âm'),
   content: yup.string().required('Vui lòng nhập trường này'),
   // images: yup.array().required("Vui lòng nhập trường này"),
-  rating: yup
+  ratting: yup
     .number()
     .required('Vui lòng nhập trường này')
     .integer('Vui lòng nhập số nguyên')
@@ -54,6 +56,7 @@ const tourSchema = yup.object().shape({
     .number()
     .required('Vui lòng nhập trường này')
     .moreThan(0, 'Vui lòng không nhâp giá trị âm'),
+  // date: yup.number().required('Vui lòng nhập trường này'),
 });
 
 const initialValuesTour = {
@@ -65,11 +68,12 @@ const initialValuesTour = {
   price: 0,
   content: '',
   images: [],
-  rating: 1,
+  ratting: 1,
   thumbnail: '',
   codeTour: '',
   maxNumber: 0,
   description: '',
+  date: 0,
 };
 
 const typeCategory = [
@@ -91,7 +95,7 @@ const Create = () => {
 
   const [imageFiles, setImageFiles] = useState();
   const [thumbnailFile, setThumbnailFile] = useState();
-
+  const [startDate, setStartDate] = useState(new Date());
   const uploadImage = async () => {
     try {
       if (!imageFiles && !tour) return false;
@@ -134,14 +138,12 @@ const Create = () => {
     try {
       const thumbnail = await uploadThumbnail();
       if (!thumbnail) return;
-
       const images = await uploadImage();
-
       if (!images) return;
-
+      values.date = startDate.getTime();
       if (typeof thumbnail !== 'boolean') values.thumbnail = thumbnail;
       if (typeof images !== 'boolean') values.images = images;
-
+      console.log(values);
       if (!tour) await http.post('/tour', values);
       else await http.patch(`/tour/${id}`, values);
 
@@ -243,6 +245,17 @@ const Create = () => {
                   </MenuItem>
                 ))}
               </TextField>
+              <DatePicker
+                selected={startDate}
+                onChange={(date) => setStartDate(date)}
+                timeInputLabel="Time:"
+                name="date"
+                dateFormat="MM/dd/yyyy h:mm aa"
+                showTimeInput
+                error={Boolean(touched.date) && Boolean(errors.date)}
+                helperText={touched.date && errors.date}
+                sx={{ gridColumn: 'span 4' }}
+              />
               <TextField
                 label="Điểm đến"
                 onBlur={handleBlur}
@@ -308,11 +321,11 @@ const Create = () => {
                 label="Đánh giá tour"
                 onBlur={handleBlur}
                 onChange={handleChange}
-                value={values.rating}
-                name="rating"
+                value={values.ratting}
+                name="ratting"
                 type="number"
-                error={Boolean(touched.rating) && Boolean(errors.rating)}
-                helperText={touched.rating && errors.rating}
+                error={Boolean(touched.ratting) && Boolean(errors.ratting)}
+                helperText={touched.ratting && errors.ratting}
                 sx={{ gridColumn: 'span 4' }}
               />
               <TextField

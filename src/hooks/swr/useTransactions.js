@@ -8,7 +8,7 @@ export const useTransactions = (role) => {
       http
         .get(url, {
           params: {
-            role,
+           
           },
         })
         .then((res) => res.data)

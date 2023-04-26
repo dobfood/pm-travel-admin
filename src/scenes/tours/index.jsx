@@ -11,12 +11,13 @@ import {
   useTheme,
   useMediaQuery,
 } from '@mui/material';
+import Swal from 'sweetalert2';
 import CustomToolbar from 'components/CustomToolbar';
 import Header from 'components/Header';
 import { useNavigate } from 'react-router-dom';
 import { useTours } from 'hooks/swr';
 import http from 'fetcher';
-
+import moment from 'moment';
 const Tour = (props) => {
   const { tour, mutate } = props;
   const {
@@ -25,18 +26,19 @@ const Tour = (props) => {
     price,
     content,
     category,
-    stat,
     numberDay,
-    score,
     totalViews,
-    rating,
+    ratting,
     codeTour,
-    thumbnail,
+    date,
+    maxNumber,
+    departure,
+    destination,
   } = tour;
   const theme = useTheme();
   const [isExpanded, setIsExpanded] = useState(false);
   const navigate = useNavigate();
-
+  const convertDate = moment(date).format('DD/MM/YYYY HH:mm A');
   const deleteTour = async (id) => {
     try {
       await http.delete(`/tour/${id}`);
@@ -52,6 +54,7 @@ const Tour = (props) => {
         backgroundImage: 'none',
         backgroundColor: theme.palette.background.alt,
         borderRadius: '0.55rem ',
+        marginRight: '1rem',
       }}
     >
       <CardContent>
@@ -70,16 +73,32 @@ const Tour = (props) => {
           {category}
         </Typography>
         <Typography sx={{ mb: '1.5rem' }} color={theme.palette.secondary[400]}>
-          {Number(price).toFixed(3)} Đồng
+          { Number(price).toLocaleString('vi-VN', {style: 'currency', currency: 'VND'})} VND
         </Typography>
-        <Rating value={rating} readOnly />
+        <Rating value={ratting} readOnly />
         <Typography variant="body2"> {content}</Typography>
       </CardContent>
       <CardActions>
         <Button
           variant="secondary"
           size="small"
-          onClick={() => deleteTour(_id)}
+          onClick={() =>
+            Swal.fire({
+              title: 'Bạn chắc chứ?',
+              text: 'Bạn không thể hoàn tác quá trình này!',
+              icon: 'warning',
+              showCancelButton: true,
+              confirmButtonColor: '#3085d6',
+              cancelButtonColor: '#d33',
+              confirmButtonText: 'Vâng đồng ý!',
+              cancelButtonText: 'Hủy bỏ',
+            }).then((result) => {
+              if (result.isConfirmed) {
+                Swal.fire('Thành công!', 'Bạn đã xóa tour này.', 'success');
+                deleteTour(_id);
+              }
+            })
+          }
         >
           Xóa
         </Button>
@@ -99,11 +118,15 @@ const Tour = (props) => {
         sx={{ color: theme.palette.neutral[300] }}
       >
         <CardContent>
-          <Typography>id: {_id}</Typography>
-          <Typography>Danh thu hằng năm : {stat?.yearlySalesTotal}</Typography>
+          <Typography>Mã tour:{codeTour}</Typography>
+          <Typography>Số lượng ghế :{maxNumber} </Typography>
           <Typography>
-            Tổng số lượng đặt tour: {stat?.yearlyTotalSoldUnits}
+            Xuất phát : {departure} -> {destination}{' '}
           </Typography>
+          <Typography>
+            Ngày đi :{convertDate} Tour {numberDay} ngày
+          </Typography>
+          <Typography>Lượt xem : {totalViews}</Typography>
         </CardContent>
       </Collapse>
     </Card>

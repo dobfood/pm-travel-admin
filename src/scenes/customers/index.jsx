@@ -5,8 +5,7 @@ import { useUsers } from 'hooks/swr';
 
 const Customers = () => {
   const theme = useTheme();
-  const { users: customers } = useUsers('user');
-
+  const { users: customers, mutate, isLoading, error } = useUsers('user');
   if (!customers) return null;
   const columns = [
     {

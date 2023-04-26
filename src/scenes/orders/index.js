@@ -1,20 +1,19 @@
 import React, { useState } from 'react';
 import { Box, useTheme } from '@mui/material';
 import { DataGrid } from '@mui/x-data-grid';
-// import { useGetTransactionsQuery } from "state/api";
 import Header from 'components/Header';
-import { useTransactions } from 'hooks/swr';
+import { useOrders } from 'hooks/swr';
 import DataGridCustomToolbar from 'components/DataGridCustomToolbar';
-const Transactions = () => {
+const Orders = () => {
   const theme = useTheme();
-  const { error, transactions, isLoading } = useTransactions();
+  const { error, orders, isLoading } = useOrders();
   // value to be send to backend
   const [page, setPage] = useState(0);
   const [pageSize, setPageSize] = useState(20);
   const [sort, setSort] = useState({});
   const [search, setSearch] = useState('');
   const [searchInput, setSearchInput] = useState('');
-  if (!transactions) return null;
+  if (!orders) return null;
   const columns = [
     {
       field: '_id',
@@ -22,24 +21,19 @@ const Transactions = () => {
       flex: 1,
     },
     {
-      field: 'userId',
-      headerName: 'ID người dùng',
+      field: 'name',
+      headerName: 'Người đặt',
       flex: 1,
     },
     ,
     {
-      field: 'idTourOrder',
-      headerName: 'Tên người dùng',
+      field: 'idTour',
+      headerName: 'ID Tour',
       flex: 0.5,
     },
     {
-      field: 'createdAt',
-      headerName: 'Ngày tạo',
-      flex: 1,
-    },
-    {
-      field: 'tour',
-      headerName: 'Tour',
+      field: 'date',
+      headerName: 'Ngày đặt',
       flex: 1,
     },
     {
@@ -53,13 +47,13 @@ const Transactions = () => {
         }),
     },
     {
-      field: 'method',
-      headerName: 'Loại thanh toán ',
+      field: 'phone',
+      headerName: 'Số điện thoại',
       flex: 1,
     },
     {
       field: 'status',
-      headerName: 'Trạng thái thanh toán',
+      headerName: 'Trạng thái',
       flex: 1,
     },
   ];
@@ -81,7 +75,7 @@ const Transactions = () => {
             borderBottom: 'none',
           },
           '& .MuiDataGrid-virtualScroller': {
-            backgroundColor: theme.palette.light,
+            backgroundColor: theme.palette.primary.light,
           },
           '& .MuiDataGrid-footerContainer': {
             backgroundColor: theme.palette.background.alt,
@@ -95,10 +89,10 @@ const Transactions = () => {
       >
         <DataGrid
           getRowId={(row) => row._id}
-          rows={(transactions && transactions.transaction) || []}
+          rows={(orders && orders.order) || []}
           columns={columns}
-          rowCount={(transactions && transactions.total) || []}
-          rowPerPageOptions={[20, 50, 100]}
+          rowCount={(orders && orders.total) || []}
+          rowsPerPageOptions={[20, 50, 100]}
           pagination
           page={page}
           pageSize={pageSize}
@@ -117,4 +111,4 @@ const Transactions = () => {
   );
 };
 
-export default Transactions;
+export default Orders;

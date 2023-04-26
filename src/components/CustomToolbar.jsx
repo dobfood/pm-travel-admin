@@ -16,9 +16,8 @@ const CustomToolbar = ({ value, onChange, onSearch, router }) => {
     <FlexBetween width="100%">
       <TextField
         label="Tìm kiếm..."
-        sx={{ mb: ' 0.5rem', width: '15rem' }}
+        sx={{ mb: ' 0.5rem', width: '15rem' }} 
         onChange={(e) => {
-          console.log(e.target.value);
           if (onChange) onChange(e.target.value);
         }}
         value={value}
