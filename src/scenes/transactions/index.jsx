@@ -1,61 +1,65 @@
-import React, { useState } from "react";
-import { Box, useTheme } from "@mui/material";
-import { DataGrid } from "@mui/x-data-grid";
+import React, { useState } from 'react';
+import { Box, useTheme } from '@mui/material';
+import { DataGrid } from '@mui/x-data-grid';
 // import { useGetTransactionsQuery } from "state/api";
-import Header from "components/Header";
-import { useTransactions } from "hooks/swr";
-import DataGridCustomToolbar from "components/DataGridCustomToolbar";
+import Header from 'components/Header';
+import { useTransactions } from 'hooks/swr';
+import DataGridCustomToolbar from 'components/DataGridCustomToolbar';
 const Transactions = () => {
   const theme = useTheme();
-  const {error, transactions , isLoading} = useTransactions()
+  const { error, transactions, isLoading } = useTransactions();
   // value to be send to backend
   const [page, setPage] = useState(0);
   const [pageSize, setPageSize] = useState(20);
   const [sort, setSort] = useState({});
-  const [search, setSearch] = useState("");
-  const [searchInput, setSearchInput] = useState("");
+  const [search, setSearch] = useState('');
+  const [searchInput, setSearchInput] = useState('');
   if (!transactions) return null;
   const columns = [
     {
-      field: "_id",
-      headerName: "ID",
+      field: '_id',
+      headerName: 'ID',
       flex: 1,
     },
     {
-      field: "userId",
-      headerName: "ID người dùng",
+      field: 'userId',
+      headerName: 'ID người dùng',
       flex: 1,
     },
     ,
     {
-      field: "idTourOrder",
-      headerName: "Tên người dùng",
+      field: 'idTourOrder',
+      headerName: 'Tên người dùng',
       flex: 0.5,
     },
     {
-      field: "createdAt",
-      headerName: "Ngày tạo",
+      field: 'createdAt',
+      headerName: 'Ngày tạo',
       flex: 1,
     },
     {
-      field: "tour",
-      headerName: "Tour",
+      field: 'tour',
+      headerName: 'Tour',
       flex: 1,
     },
     {
-      field: "totalMoney",
-      headerName: "Tổng tiền",
+      field: 'totalMoney',
+      headerName: 'Tổng tiền',
       flex: 1,
-      renderCell: (params) => `${Number(params.value.toFixed(3))}VNĐ`,
+      renderCell: (params) =>
+        Number(params.value).toLocaleString('vi-VN', {
+          style: 'currency',
+          currency: 'VND',
+        }),
     },
     {
-      field: "method",
-      headerName: "Loại thanh toán ",
+      field: 'method',
+      headerName: 'Loại thanh toán ',
       flex: 1,
     },
     {
-      field: "status",
-      headerName: "Trạng thái thanh toán",
+      field: 'status',
+      headerName: 'Trạng thái thanh toán',
       flex: 1,
     },
   ];
@@ -65,35 +69,35 @@ const Transactions = () => {
       <Box
         height="80vh"
         sx={{
-          "& .MuiDataGrid-root": {
-            border: "none",
+          '& .MuiDataGrid-root': {
+            border: 'none',
           },
-          "& .MuiDataGrid-cell": {
-            borderBottom: "none",
+          '& .MuiDataGrid-cell': {
+            borderBottom: 'none',
           },
-          "& .MuiDataGrid-columnHeaders": {
+          '& .MuiDataGrid-columnHeaders': {
             backgroundColor: theme.palette.background.alt,
             color: theme.palette.secondary[100],
-            borderBottom: "none",
+            borderBottom: 'none',
           },
-          "& .MuiDataGrid-virtualScroller": {
+          '& .MuiDataGrid-virtualScroller': {
             backgroundColor: theme.palette.light,
           },
-          "& .MuiDataGrid-footerContainer": {
+          '& .MuiDataGrid-footerContainer': {
             backgroundColor: theme.palette.background.alt,
             color: theme.palette.secondary[100],
-            borderTop: "none",
+            borderTop: 'none',
           },
-          "& .MuiDataGrid-toolbarContainer .MuiButton-text": {
+          '& .MuiDataGrid-toolbarContainer .MuiButton-text': {
             color: `${theme.palette.secondary[200]} !important`,
           },
         }}
       >
         <DataGrid
           getRowId={(row) => row._id}
-          rows={(transactions) || []}
+          rows={(transactions && transactions.transaction) || []}
           columns={columns}
-          rowCount={(transactions) || []}
+          rowCount={(transactions && transactions.total) || []}
           rowPerPageOptions={[20, 50, 100]}
           pagination
           page={page}

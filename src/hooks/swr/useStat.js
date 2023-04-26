@@ -1,12 +1,13 @@
 import http from 'fetcher';
 import useSWR from 'swr';
 
-export const useOrders = () => {
-  const { data, error, isLoading, mutate } = useSWR('/order', (url) =>
+export const useStat = (id) => {
+  const { data, error, isLoading, mutate } = useSWR('stat', (url) =>
     http.get(url).then((res) => res.data)
   );
+  console.log(data);
   return {
-    orders: data,
+    stat: data,
     isLoading,
     error,
     mutate,

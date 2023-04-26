@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import {
   Box,
   Button,
@@ -19,7 +19,6 @@ import { ref, uploadBytes, getDownloadURL } from 'firebase/storage';
 import { storage } from '../../firebase-config';
 import Dropzone from 'react-dropzone';
 import EditOutlinedIcon from '@mui/icons-material/EditOutlined';
-import { useSelector } from 'react-redux';
 import Header from 'components/Header';
 import { useProvinces, useTour } from 'hooks/swr';
 import http from 'fetcher';
@@ -38,7 +37,7 @@ const tourSchema = yup.object().shape({
     .moreThan(0, 'Vui lòng không nhâp giá trị âm'),
   content: yup.string().required('Vui lòng nhập trường này'),
   // images: yup.array().required("Vui lòng nhập trường này"),
-  rating: yup
+  ratting: yup
     .number()
     .required('Vui lòng nhập trường này')
     .integer('Vui lòng nhập số nguyên')
@@ -54,17 +53,20 @@ const tourSchema = yup.object().shape({
     .number()
     .required('Vui lòng nhập trường này')
     .moreThan(0, 'Vui lòng không nhâp giá trị âm'),
+  date: yup.number().required('Vui lòng nhập trường này'),
 });
+
 const initialValuesTour = {
   category: '',
   title: '',
   departure: '',
   destination: '',
+  date: 0,
   numberDay: 0,
   price: 0,
   content: '',
   images: [],
-  rating: 1,
+  ratting: 1,
   thumbnail: '',
   codeTour: '',
   maxNumber: 0,
@@ -281,11 +283,11 @@ const Update = () => {
                 label="Đánh giá tour"
                 onBlur={handleBlur}
                 onChange={handleChange}
-                value={values.rating}
-                name="rating"
+                value={values.ratting}
+                name="ratting"
                 type="number"
-                error={Boolean(touched.rating) && Boolean(errors.rating)}
-                helperText={touched.rating && errors.rating}
+                error={Boolean(touched.ratting) && Boolean(errors.ratting)}
+                helperText={touched.ratting && errors.ratting}
                 sx={{ gridColumn: 'span 4' }}
               />
               <TextField

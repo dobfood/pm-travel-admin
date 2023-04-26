@@ -21,40 +21,39 @@ const Orders = () => {
       flex: 1,
     },
     {
-      field: 'userId',
-      headerName: 'ID người dùng',
+      field: 'name',
+      headerName: 'Người đặt',
       flex: 1,
     },
     ,
     {
-      field: 'idTourOrder',
-      headerName: 'Tên người dùng',
+      field: 'idTour',
+      headerName: 'ID Tour',
       flex: 0.5,
     },
     {
-      field: 'createdAt',
-      headerName: 'Ngày tạo',
-      flex: 1,
-    },
-    {
-      field: 'tour',
-      headerName: 'Tour',
+      field: 'date',
+      headerName: 'Ngày đặt',
       flex: 1,
     },
     {
       field: 'totalMoney',
       headerName: 'Tổng tiền',
       flex: 1,
-      renderCell: (params) => `${Number(params.value.toFixed(3))}VNĐ`,
+      renderCell: (params) =>
+        Number(params.value).toLocaleString('vi-VN', {
+          style: 'currency',
+          currency: 'VND',
+        }),
     },
     {
-      field: 'method',
-      headerName: 'Loại thanh toán ',
+      field: 'phone',
+      headerName: 'Số điện thoại',
       flex: 1,
     },
     {
       field: 'status',
-      headerName: 'Trạng thái thanh toán',
+      headerName: 'Trạng thái',
       flex: 1,
     },
   ];
@@ -76,7 +75,7 @@ const Orders = () => {
             borderBottom: 'none',
           },
           '& .MuiDataGrid-virtualScroller': {
-            backgroundColor: theme.palette.light,
+            backgroundColor: theme.palette.primary.light,
           },
           '& .MuiDataGrid-footerContainer': {
             backgroundColor: theme.palette.background.alt,
@@ -90,10 +89,10 @@ const Orders = () => {
       >
         <DataGrid
           getRowId={(row) => row._id}
-          rows={orders || []}
+          rows={(orders && orders.order) || []}
           columns={columns}
-          rowCount={orders || []}
-          rowPerPageOptions={[20, 50, 100]}
+          rowCount={(orders && orders.total) || []}
+          rowsPerPageOptions={[20, 50, 100]}
           pagination
           page={page}
           pageSize={pageSize}

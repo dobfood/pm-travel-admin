@@ -41,17 +41,17 @@ const navItems = [
   { link: "order", text: "Đặt tour", icon: <HomeOutlined /> },
   { link: "", text: "Thông báo", icon: <NotificationsOutlined /> },
   { text: "Thống kê", icon: null },
-  { link: "", text: "Tổng quan", icon: <PointOfSaleOutlined /> },
-  { link: "", text: "Hằng ngày", icon: <TodayOutlined /> },
-  { link: "", text: "Hằng tháng", icon: <CalendarMonthOutlined /> },
-  { link: "", text: "Biểu đồ tròn", icon: <PieChartOutlined /> },
+  // { link: "", text: "Tổng quan", icon: <PointOfSaleOutlined /> },
+  // { link: "", text: "Hằng ngày", icon: <TodayOutlined /> },
+  // { link: "", text: "Hằng tháng", icon: <CalendarMonthOutlined /> },
+  { link: "breakdown", text: "Biểu đồ tròn", icon: <PieChartOutlined /> },
   { text: "Quản lý", icon: null },
-  {
-    link: "admin",
-    text: "Quản trị viên",
-    icon: <AdminPanelSettingsOutlined />,
-  },
-  { link: "", text: "Hiệu suất", icon: <TrendingUpOutlined /> },
+  // {
+  //   link: "admin",
+  //   text: "Quản trị viên",
+  //   icon: <AdminPanelSettingsOutlined />,
+  // },
+  // { link: "", text: "Hiệu suất", icon: <TrendingUpOutlined /> },
 ];
 
 const Sidebar = ({
