@@ -7,6 +7,7 @@ import DataGridCustomToolbar from 'components/DataGridCustomToolbar';
 const Orders = () => {
   const theme = useTheme();
   const { error, orders, isLoading } = useOrders();
+  console.log(orders)
   // value to be send to backend
   const [page, setPage] = useState(0);
   const [pageSize, setPageSize] = useState(20);
@@ -27,8 +28,8 @@ const Orders = () => {
     },
     ,
     {
-      field: 'idTour',
-      headerName: 'ID Tour',
+      field: `idTour.codeTour`,
+      headerName: 'Mã tour',
       flex: 0.5,
     },
     {

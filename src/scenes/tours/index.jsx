@@ -25,8 +25,7 @@ const Tour = (props) => {
     title,
     price,
     content,
-    category,
-    numberDay,
+    idCategory,
     totalViews,
     ratting,
     codeTour,
@@ -70,10 +69,10 @@ const Tour = (props) => {
           color={theme.palette.secondary[700]}
           gutterBottom
         >
-          {category}
+          {idCategory?.title}
         </Typography>
         <Typography sx={{ mb: '1.5rem' }} color={theme.palette.secondary[400]}>
-          { Number(price).toLocaleString('vi-VN', {style: 'currency', currency: 'VND'})} VND
+          {Number(price).toLocaleString('vi-VN', { currency: 'VND' })} VND
         </Typography>
         <Rating value={ratting} readOnly />
         <Typography variant="body2"> {content}</Typography>
@@ -121,11 +120,9 @@ const Tour = (props) => {
           <Typography>Mã tour:{codeTour}</Typography>
           <Typography>Số lượng ghế :{maxNumber} </Typography>
           <Typography>
-            Xuất phát : {departure} -> {destination}{' '}
+            Xuất phát : {departure.title} -> {destination.title}{' '}
           </Typography>
-          <Typography>
-            Ngày đi :{convertDate} Tour {numberDay} ngày
-          </Typography>
+          <Typography>Ngày đi :{convertDate}</Typography>
           <Typography>Lượt xem : {totalViews}</Typography>
         </CardContent>
       </Collapse>

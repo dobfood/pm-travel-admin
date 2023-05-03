@@ -5,3 +5,4 @@ export * from './useTransactions';
 export * from './useOrders';
 export * from './useUsers';
 export * from './useStat';
+export * from './useCategorys'

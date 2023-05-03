@@ -22,18 +22,14 @@ import { storage } from '../../firebase-config';
 import Dropzone from 'react-dropzone';
 import EditOutlinedIcon from '@mui/icons-material/EditOutlined';
 import Header from 'components/Header';
-import { useProvinces, useTour } from 'hooks/swr';
+import { useCategorys, useProvinces, useTour } from 'hooks/swr';
 import http from 'fetcher';
 
 const tourSchema = yup.object().shape({
-  category: yup.string().required('Vui lòng nhập trường này'),
+  idCategory: yup.string().required('Vui lòng nhập trường này'),
   title: yup.string().required('Vui lòng nhập trường này'),
   departure: yup.string().required('Vui lòng nhập trường này'),
   destination: yup.string().required('Vui lòng nhập trường này'),
-  numberDay: yup
-    .number()
-    .required('Vui lòng nhập trường này')
-    .moreThan(0, 'Vui lòng không nhâp giá trị âm'),
   price: yup
     .number()
     .required('Vui lòng nhập trường này')
@@ -47,6 +43,16 @@ const tourSchema = yup.object().shape({
     .moreThan(0, 'Vui lòng nhập giá trị lớn hơn 0')
     .lessThan(6, 'Vui lòng nhập giá trị bé hơn hoặt bằng 5'),
   // thumbnail: yup.string().required("Vui lòng nhập trường này"),
+  schedule: yup
+    .array()
+    .of(
+      yup.object().shape({
+        day: yup.number().required('Vui lòng nhập trường này'),
+        title: yup.string().required('Vui lòng nhập trường này'),
+        content: yup.string().required('Vui lòng nhập trường này'),
+      })
+    )
+    .min(1, 'Vui lòng nhập trường này'),
   description: yup.string(),
   codeTour: yup
     .string()
@@ -60,11 +66,10 @@ const tourSchema = yup.object().shape({
 });
 
 const initialValuesTour = {
-  category: '',
+  idCategory: '',
   title: '',
   departure: '',
   destination: '',
-  numberDay: 0,
   price: 0,
   content: '',
   images: [],
@@ -72,27 +77,19 @@ const initialValuesTour = {
   thumbnail: '',
   codeTour: '',
   maxNumber: 0,
-  description: '',
+  schedule: [{ day: 1, title: '', content: '' }],
   date: 0,
 };
-
-const typeCategory = [
-  { value: 'tourCultural', text: 'Du lịch văn hóa' },
-  { value: 'tourEco', text: 'Du lịch sinh thái' },
-  { value: 'tourResort', text: 'Du lịch nghỉ dưỡng' },
-  { value: 'tourDiscovery', text: 'Du lịch khám phá' },
-];
 
 const Create = () => {
   const { palette } = useTheme();
   const theme = useTheme();
   const isNoneMobile = useMediaQuery('(min-width:600px))');
   const navigate = useNavigate();
-
   const { id } = useParams();
   const { tour } = useTour(id);
   const { provinces = [] } = useProvinces();
-
+  const { categorys = [] } = useCategorys();
   const [imageFiles, setImageFiles] = useState();
   const [thumbnailFile, setThumbnailFile] = useState();
   const [startDate, setStartDate] = useState(new Date());
@@ -143,7 +140,7 @@ const Create = () => {
       values.date = startDate.getTime();
       if (typeof thumbnail !== 'boolean') values.thumbnail = thumbnail;
       if (typeof images !== 'boolean') values.images = images;
-      console.log(values);
+      values.codeTour.toUpperCase()
       if (!tour) await http.post('/tour', values);
       else await http.patch(`/tour/${id}`, values);
 
@@ -201,6 +198,7 @@ const Create = () => {
           handleBlur,
           handleChange,
           handleSubmit,
+          setFieldValue,
         }) => (
           <form onSubmit={handleSubmit}>
             <Box
@@ -212,19 +210,31 @@ const Create = () => {
               }}
             >
               <TextField
+                label="Tên tour du lịch"
+                onBlur={handleBlur}
+                onChange={handleChange}
+                value={values.title}
+                name="title"
+                error={Boolean(touched.title) && Boolean(errors.title)}
+                helperText={touched.title && errors.title}
+                sx={{ gridColumn: 'span 4' }}
+              />
+              <TextField
                 label="Loại du lịch"
                 onBlur={handleBlur}
                 onChange={handleChange}
-                value={values.category}
-                name="category"
+                value={values.idCategory}
+                name="idCategory"
                 select
-                error={Boolean(touched.category) && Boolean(errors.category)}
-                helperText={touched.category && errors.category}
-                sx={{ gridColumn: 'span 4' }}
+                error={
+                  Boolean(touched.idCategory) && Boolean(errors.idCategory)
+                }
+                helperText={touched.idCategory && errors.idCategory}
+                sx={{ gridColumn: 'span 1' }}
               >
-                {typeCategory.map((option) => (
-                  <MenuItem key={option.value} value={option.value}>
-                    {option.text}
+                {categorys.map((option) => (
+                  <MenuItem key={option._id} value={option._id}>
+                    {option.title}
                   </MenuItem>
                 ))}
               </TextField>
@@ -237,10 +247,29 @@ const Create = () => {
                 select
                 error={Boolean(touched.departure) && Boolean(errors.departure)}
                 helperText={touched.departure && errors.departure}
-                sx={{ gridColumn: 'span 4' }}
+                sx={{ gridColumn: 'span 1' }}
               >
                 {provinces.map((option) => (
-                  <MenuItem key={option._id} value={option.title}>
+                  <MenuItem key={option._id} value={option._id}>
+                    {option.title}
+                  </MenuItem>
+                ))}
+              </TextField>
+              <TextField
+                label="Điểm đến"
+                onBlur={handleBlur}
+                onChange={handleChange}
+                value={values.destination}
+                name="destination"
+                select
+                error={
+                  Boolean(touched.destination) && Boolean(errors.destination)
+                }
+                helperText={touched.destination && errors.destination}
+                sx={{ gridColumn: 'span 1' }}
+              >
+                {provinces.map((option) => (
+                  <MenuItem key={option._id} value={option._id}>
                     {option.title}
                   </MenuItem>
                 ))}
@@ -254,46 +283,18 @@ const Create = () => {
                 showTimeInput
                 error={Boolean(touched.date) && Boolean(errors.date)}
                 helperText={touched.date && errors.date}
-                sx={{ gridColumn: 'span 4' }}
+                sx={{ gridColumn: 'span 1' }}
               />
+
               <TextField
-                label="Điểm đến"
-                onBlur={handleBlur}
-                onChange={handleChange}
-                value={values.destination}
-                name="destination"
-                select
-                error={
-                  Boolean(touched.destination) && Boolean(errors.destination)
-                }
-                helperText={touched.destination && errors.destination}
-                sx={{ gridColumn: 'span 4' }}
-              >
-                {provinces.map((option) => (
-                  <MenuItem key={option._id} value={option.title}>
-                    {option.title}
-                  </MenuItem>
-                ))}
-              </TextField>
-              <TextField
-                label="Tên tour du lịch"
-                onBlur={handleBlur}
-                onChange={handleChange}
-                value={values.title}
-                name="title"
-                error={Boolean(touched.title) && Boolean(errors.title)}
-                helperText={touched.title && errors.title}
-                sx={{ gridColumn: 'span 4' }}
-              />
-              <TextField
-                label="Mã tour"
+                label="Mã tour(không được trùng)"
                 onBlur={handleBlur}
                 onChange={handleChange}
                 value={values.codeTour}
                 name="codeTour"
                 error={Boolean(touched.codeTour) && Boolean(errors.codeTour)}
                 helperText={touched.codeTour && errors.codeTour}
-                sx={{ gridColumn: 'span 4' }}
+                sx={{ gridColumn: 'span 1' }}
               />
               <TextField
                 label="Số lượng người"
@@ -304,7 +305,7 @@ const Create = () => {
                 type="number"
                 error={Boolean(touched.maxNumber) && Boolean(errors.maxNumber)}
                 helperText={touched.maxNumber && errors.maxNumber}
-                sx={{ gridColumn: 'span 4' }}
+                sx={{ gridColumn: 'span 1' }}
               />
               <TextField
                 label="Giá tour"
@@ -315,7 +316,7 @@ const Create = () => {
                 type="number"
                 error={Boolean(touched.price) && Boolean(errors.price)}
                 helperText={touched.price && errors.price}
-                sx={{ gridColumn: 'span 4' }}
+                sx={{ gridColumn: 'span 1' }}
               />
               <TextField
                 label="Đánh giá tour"
@@ -326,36 +327,109 @@ const Create = () => {
                 type="number"
                 error={Boolean(touched.ratting) && Boolean(errors.ratting)}
                 helperText={touched.ratting && errors.ratting}
-                sx={{ gridColumn: 'span 4' }}
+                sx={{ gridColumn: 'span 1' }}
               />
-              <TextField
-                label="Số ngày đi"
-                onBlur={handleBlur}
-                onChange={handleChange}
-                value={values.numberDay}
-                name="numberDay"
-                type="number"
-                error={Boolean(touched.numberDay) && Boolean(errors.numberDay)}
-                helperText={touched.numberDay && errors.numberDay}
-                sx={{ gridColumn: 'span 4' }}
-              />
-              <TextField
+                            <TextField
                 onBlur={handleBlur}
                 onChange={handleChange}
                 value={values.content}
                 name="content"
                 error={Boolean(touched.content) && Boolean(errors.content)}
                 helperText={touched.content && errors.content}
-                label="Content"
+                label="Mô tả ngắn"
                 multiline
-                minRows={4}
+                minRows={2}
                 sx={{ gridColumn: 'span 4' }}
               />
-              <CKEditor
+              {values.schedule.map((_, index) => (
+                <div
+                  key={index}
+                  style={{
+                    display: 'grid',
+                    gap: '16px',
+                  }}
+                  sx={{gridColumn :'span 4'}}
+                >
+                  <TextField
+                    name={`schedule[${index}].day`}
+                    label="Ngày"
+                    type="number"
+                    onBlur={handleBlur}
+                    value={values.schedule[index].day}
+                    onChange={handleChange}
+                    disabled
+                    error={
+                      Boolean(touched.schedule?.[index]?.day) &&
+                      Boolean(errors.schedule?.[index]?.day)
+                    }
+                    helperText={
+                      touched.schedule?.[index]?.day &&
+                      errors.schedule?.[index]?.day
+                    }
+                  />
+                  <TextField
+                    name={`schedule[${index}].title`}
+                    label="Tiêu đề lịch trình"
+                    value={values.schedule[index].title}
+                    onChange={handleChange}
+                    multiline
+                    minRows={2}
+                    error={
+                      Boolean(touched.schedule?.[index]?.title) &&
+                      Boolean(errors.schedule?.[index]?.title)
+                    }
+                    helperText={
+                      touched.schedule?.[index]?.title &&
+                      errors.schedule?.[index]?.title
+                    }
+                  />
+                  <TextField
+                    name={`schedule[${index}].content`}
+                    label="Mô tả lịch trình"
+                    value={values.schedule[index].content}
+                    onChange={handleChange}
+                    multiline
+                    minRows={4}
+                    error={
+                      Boolean(touched.schedule?.[index]?.content) &&
+                      Boolean(errors.schedule?.[index]?.content)
+                    }
+                    helperText={
+                      touched.schedule?.[index]?.content &&
+                      errors.schedule?.[index]?.content
+                    }
+                  />
+                </div>
+              ))}
+              <Button
+                type="button"
+                variant="contained"
+                onClick={() => {
+                  // Thêm một object mới vào mảng 'schedule'
+                  const newSchedule = {
+                    day: values.schedule.length + 1,
+                    title: '',
+                    content: '',
+                  };
+                  setFieldValue('schedule', [...values.schedule, newSchedule]);
+                }}
+                sx={{ gridColumn: 'span 4' }}
+              >
+                Thêm lịch
+              </Button>
+
+              <TextField
                 onBlur={handleBlur}
                 onChange={handleChange}
                 value={values.description}
-                initData="<h1>Hãy nhập mô tả tour</h1>"
+                name="description"
+                error={
+                  Boolean(touched.description) && Boolean(errors.description)
+                }
+                helperText={touched.description && errors.description}
+                label="Chi tiết"
+                multiline
+                minRows={4}
                 sx={{ gridColumn: 'span 4' }}
               />
               <Box
@@ -368,6 +442,7 @@ const Create = () => {
                   acceptedFiles=".jpg,.jpeg,.png"
                   multiple={false}
                   onDrop={(acceptedFiles) => {
+                    console.log(values);
                     setThumbnailFile(acceptedFiles[0]);
                   }}
                 >
@@ -417,7 +492,7 @@ const Create = () => {
                     >
                       <input {...getInputProps()} />
                       {!imageFiles && !tour ? (
-                        <p>Thêm hình ảnh nhỏ </p>
+                        <p>Thêm hình nhiều hình ảnh tại đây </p>
                       ) : (
                         <FlexBetween>
                           <Typography>
