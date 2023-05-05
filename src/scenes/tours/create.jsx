@@ -12,7 +12,6 @@ import './create.css';
 import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
 import Swal from 'sweetalert2';
-import { CKEditor } from 'ckeditor4-react';
 import { Formik } from 'formik';
 import * as yup from 'yup';
 import { useNavigate, useParams } from 'react-router-dom';
@@ -342,7 +341,7 @@ const Create = () => {
                 sx={{ gridColumn: 'span 4' }}
               />
               {values.schedule.map((_, index) => (
-                <div
+                <Box
                   key={index}
                   style={{
                     display: 'grid',
@@ -399,7 +398,7 @@ const Create = () => {
                       errors.schedule?.[index]?.content
                     }
                   />
-                </div>
+                </Box>
               ))}
               <Button
                 type="button"

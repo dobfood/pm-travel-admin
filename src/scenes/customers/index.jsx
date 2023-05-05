@@ -13,11 +13,11 @@ const Customers = () => {
       headerName: 'ID',
       flex: 1,
     },
-    {
-      field: 'avatar',
-      headerName: 'Avatar',
-      flex: 1,
-    },
+    // {
+    //   field: 'avatar',
+    //   headerName: 'Avatar',
+    //   flex: 1,
+    // },
     {
       field: 'fullName',
       headerName: 'Tên người dùng',
