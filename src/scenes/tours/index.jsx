@@ -66,7 +66,7 @@ const Tour = (props) => {
         </Button>
         <Typography
           sx={{ fontSize: 14 }}
-          color={theme.palette.secondary[700]}
+          color={theme.palette.secondary[700].alt}
           gutterBottom
         >
           {idCategory?.title}

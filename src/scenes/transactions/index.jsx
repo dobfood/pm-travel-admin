@@ -1,19 +1,20 @@
 import React, { useState } from 'react';
-import { Box, useTheme } from '@mui/material';
+import { Box, useTheme, Chip } from '@mui/material';
 import { DataGrid } from '@mui/x-data-grid';
-// import { useGetTransactionsQuery } from "state/api";
 import Header from 'components/Header';
 import { useTransactions } from 'hooks/swr';
 import DataGridCustomToolbar from 'components/DataGridCustomToolbar';
 const Transactions = () => {
   const theme = useTheme();
   const { error, transactions, isLoading } = useTransactions();
+
   // value to be send to backend
   const [page, setPage] = useState(0);
   const [pageSize, setPageSize] = useState(20);
   const [sort, setSort] = useState({});
   const [search, setSearch] = useState('');
   const [searchInput, setSearchInput] = useState('');
+  console.log(transactions);
   if (!transactions) return null;
   const columns = [
     {
@@ -25,42 +26,42 @@ const Transactions = () => {
       field: 'userId',
       headerName: 'ID người dùng',
       flex: 1,
+      valueGetter: (params) => params.row.idCustomer?.fullName,
     },
-    ,
     {
-      field: 'idTourOrder',
-      headerName: 'Tên người dùng',
+      field: 'idTour',
+      headerName: 'Mã tour',
       flex: 0.5,
+      valueGetter: (params) => params.row.idTour?.codeTour,
+    },
+    {
+      field: 'codeOrder',
+      headerName: 'Mã thanh toán',
+      flex: 1,
     },
     {
       field: 'createdAt',
-      headerName: 'Ngày tạo',
-      flex: 1,
+      headerName: 'Ngày xuất hóa đơn',
+      flex: 2,
+      renderCell: (params) => {
+        const date = new Date(params.value);
+        const formattedDateTime = date.toLocaleString('vi-VN', {
+          dateStyle: 'full',
+          timeStyle: 'short',
+        });
+        return formattedDateTime;
+      },
     },
     {
-      field: 'tour',
-      headerName: 'Tour',
-      flex: 1,
-    },
-    {
-      field: 'totalMoney',
+      field: 'idOrder',
       headerName: 'Tổng tiền',
       flex: 1,
+      valueGetter: (params) => params.row.totalMoney,
       renderCell: (params) =>
         Number(params.value).toLocaleString('vi-VN', {
           style: 'currency',
           currency: 'VND',
         }),
-    },
-    {
-      field: 'method',
-      headerName: 'Loại thanh toán ',
-      flex: 1,
-    },
-    {
-      field: 'status',
-      headerName: 'Trạng thái thanh toán',
-      flex: 1,
     },
   ];
   return (
@@ -95,7 +96,7 @@ const Transactions = () => {
       >
         <DataGrid
           getRowId={(row) => row._id}
-          rows={(transactions && transactions.transaction) || []}
+          rows={(transactions && transactions.transactions) || []}
           columns={columns}
           rowCount={(transactions && transactions.total) || []}
           rowPerPageOptions={[20, 50, 100]}

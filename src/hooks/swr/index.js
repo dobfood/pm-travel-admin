@@ -6,3 +6,4 @@ export * from './useOrders';
 export * from './useUsers';
 export * from './useStat';
 export * from './useCategorys'
+export *from './useDashboard'
