@@ -139,7 +139,7 @@ const Create = () => {
       values.date = startDate.getTime();
       if (typeof thumbnail !== 'boolean') values.thumbnail = thumbnail;
       if (typeof images !== 'boolean') values.images = images;
-      values.codeTour.toUpperCase()
+      values.codeTour.toUpperCase();
       if (!tour) await http.post('/tour', values);
       else await http.patch(`/tour/${id}`, values);
 
@@ -328,7 +328,7 @@ const Create = () => {
                 helperText={touched.ratting && errors.ratting}
                 sx={{ gridColumn: 'span 1' }}
               />
-                            <TextField
+              <TextField
                 onBlur={handleBlur}
                 onChange={handleChange}
                 value={values.content}
@@ -347,7 +347,7 @@ const Create = () => {
                     display: 'grid',
                     gap: '16px',
                   }}
-                  sx={{gridColumn :'span 4'}}
+                  sx={{ gridColumn: 'span 4' }}
                 >
                   <TextField
                     name={`schedule[${index}].day`}

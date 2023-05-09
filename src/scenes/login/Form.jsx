@@ -1,22 +1,11 @@
-import { useState } from 'react';
-import {
-  Box,
-  Button,
-  TextField,
-  useMediaQuery,
-  Typography,
-  useTheme,
-  FormGroup,
-} from '@mui/material';
-import EditOutlinedIcon from '@mui/icons-material/EditOutlined';
+import { Box, Button, TextField, useMediaQuery, useTheme } from '@mui/material';
 import { Formik } from 'formik';
 import * as yup from 'yup';
 import { useNavigate } from 'react-router-dom';
 import { useDispatch } from 'react-redux';
 import { setLogin } from 'state';
-import FlexBetween from 'components/FlexBetween';
 import http from 'fetcher';
-
+import Swal from 'sweetalert2';
 const loginSchema = yup.object().shape({
   email: yup
     .string()
@@ -38,17 +27,33 @@ const Form = () => {
   const login = async (values, onSubmitProps) => {
     try {
       const { data } = await http.post('/auth/signin', values);
-
-      onSubmitProps.resetForm();
-      localStorage.setItem('access-token', data.accessToken);
-      dispatch(
-        setLogin({
-          user: data,
-        })
-      );
-      navigate('/dashboard');
+      if (data.role === 'admin') {
+        onSubmitProps.resetForm();
+        localStorage.setItem('access-token', data.accessToken);
+        dispatch(
+          setLogin({
+            user: data,
+          })
+        );
+        navigate('/dashboard');
+        Swal.fire({
+          icon: 'success',
+          title: 'Chào BOSS!',
+          text: 'Đăng nhập thành công!',
+        });
+      } else {
+        Swal.fire({
+          icon: 'error',
+          title: 'Opps...',
+          text: 'Đăng nhập thất bại!',
+        });
+      }
     } catch (error) {
-      console.log(error);
+      Swal.fire({
+        icon: 'error',
+        title: 'Opps...',
+        text: 'Đăng nhập thất bại!',
+      });
     }
   };
   const handleFormSubmit = async (values, onSubmitProps) => {
@@ -109,10 +114,13 @@ const Form = () => {
               sx={{
                 m: '2rem 0',
                 p: '1rem',
-                backgroundColor: theme.palette.background.alt,
+                backgroundColor: theme.palette.background.default,
                 borderRadius: '0.55rem ',
                 color: theme.palette.secondary.main,
-                '&:hove': { color: theme.palette.secondary.main },
+                '&:hover': {
+                  color: theme.palette.background.default,
+                  background: theme.palette.secondary.main,
+                },
               }}
             >
               Đăng nhập
