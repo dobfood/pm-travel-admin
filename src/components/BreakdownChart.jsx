@@ -94,7 +94,7 @@ const BreakdownChart = ({ isDashboard = false }) => {
             translateX: isDashboard ? 20 : 0,
             translateY: isDashboard ? 50 : 56,
             itemsSpacing: 0,
-            itemWidth: 85,
+            itemWidth: 100,
             itemHeight: 18,
             itemTextColor: '#999',
             itemDirection: 'left-to-right',
@@ -105,7 +105,7 @@ const BreakdownChart = ({ isDashboard = false }) => {
               {
                 on: 'hover',
                 style: {
-                  itemTextColor: theme.palette.primary[500],
+                  itemTextColor: '#ffffff',
                 },
               },
             ],

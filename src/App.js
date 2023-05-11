@@ -8,7 +8,7 @@ import Layout from 'scenes/layout';
 import Dashboard from 'scenes/dashboard';
 import Tour from 'scenes/tours';
 import Create from 'scenes/tours/create';
-import Update from 'scenes/tours/update';
+import Contact from 'scenes/contact';
 import Customer from 'scenes/customers';
 import Transactions from 'scenes/transactions';
 import Breakdown from 'scenes/breakdown';
@@ -47,9 +47,9 @@ function App() {
                 <Route path="/customers" element={<Customer />} />
                 <Route path="/transactions" element={<Transactions />} />
                 <Route path="/order" element={<Order />} />
-
                 <Route path="/breakdown" element={<Breakdown />} />
                 <Route path="/admin" element={<Admin />} />
+                <Route path="/contact" element={<Contact />} />
               </Route>
             </Routes>
           </SWRConfig>

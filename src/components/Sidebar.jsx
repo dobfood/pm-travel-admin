@@ -19,9 +19,8 @@ import {
   Groups2Outlined,
   ReceiptLongOutlined,
   PieChartOutlined,
-  AdminPanelSettingsOutlined,
   LuggageOutlined,
-  SettingsOutlined,
+  ConnectWithoutContactOutlined,
 } from '@mui/icons-material';
 import { useEffect, useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
@@ -35,6 +34,7 @@ const navItems = [
   { link: 'transactions', text: 'Hóa đơn', icon: <ReceiptLongOutlined /> },
   { text: 'Thống kê', icon: null },
   { link: 'breakdown', text: 'Biểu đồ tròn', icon: <PieChartOutlined /> },
+  { link: 'contact', text: 'Liên hệ', icon: <ConnectWithoutContactOutlined /> },
 ];
 
 const Sidebar = ({
