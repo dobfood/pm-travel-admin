@@ -12,7 +12,6 @@ const BreakdownChart = ({ isDashboard = false }) => {
     theme.palette.secondary[300],
     theme.palette.secondary[500],
   ];
-  console.log(data[0]);
   const formattedData = Object.entries(data[0].salesByCategory).map(
     ([category, sales], i) => ({
       id: category,
@@ -95,7 +94,7 @@ const BreakdownChart = ({ isDashboard = false }) => {
             translateX: isDashboard ? 20 : 0,
             translateY: isDashboard ? 50 : 56,
             itemsSpacing: 0,
-            itemWidth: 85,
+            itemWidth: 100,
             itemHeight: 18,
             itemTextColor: '#999',
             itemDirection: 'left-to-right',
@@ -106,7 +105,7 @@ const BreakdownChart = ({ isDashboard = false }) => {
               {
                 on: 'hover',
                 style: {
-                  itemTextColor: theme.palette.primary[500],
+                  itemTextColor: '#ffffff',
                 },
               },
             ],

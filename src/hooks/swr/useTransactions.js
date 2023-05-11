@@ -1,17 +1,9 @@
 import useSWR from 'swr';
 import http from 'fetcher';
 
-export const useTransactions = (role) => {
-  const { data, error, isLoading, mutate } = useSWR(
-    '/transaction',
-    (url) =>
-      http
-        .get(url, {
-          params: {
-           
-          },
-        })
-        .then((res) => res.data)
+export const useTransactions = () => {
+  const { data, error, isLoading, mutate } = useSWR('/transaction', (url) =>
+    http.get(url, {}).then((res) => res.data)
   );
 
   return {

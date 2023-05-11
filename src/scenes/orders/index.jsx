@@ -140,7 +140,7 @@ const Orders = () => {
             <Button
               variant="contained"
               color="primary"
-              sx={{marginLeft:'4px'}}
+              sx={{ marginLeft: '4px' }}
               disabled={params.row.status !== 'check-in'}
               onClick={() =>
                 Swal.fire({
@@ -202,16 +202,16 @@ const Orders = () => {
         }}
       >
         <DataGrid
+          loading={isLoading || !orders}
           getRowId={(row) => row._id}
           rows={(orders && orders.orders) || []}
           columns={columns}
-          rowCount={(orders && orders.total) || []}
+          rowCount={(orders && orders.total) || 0}
           rowsPerPageOptions={[20, 50, 100]}
           pagination
           page={page}
           pageSize={pageSize}
           paginationMode="server"
-          sortingMode="server"
           onPageChange={(newPage) => setPage(newPage)}
           onPageSizeChange={(newPageSize) => setPageSize(newPageSize)}
           onSortModelChange={(newSortModel) => setSort(...newSortModel)}
