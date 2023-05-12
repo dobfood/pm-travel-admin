@@ -39,7 +39,9 @@ const StatBox = ({ title, value, icon, increase, description }) => {
         >
           {increase}
         </Typography>
-        <Typography>{description}</Typography>
+        <Typography sx={{ color: theme.palette.secondary.light }} fontSize='12px'>
+          {description}
+        </Typography>
       </FlexBetween>
     </Box>
   );

@@ -1,6 +1,7 @@
 import React from 'react';
 import FlexBetween from 'components/FlexBetween';
 import Header from 'components/Header';
+import './index.css'
 import {
   DownloadOutlined,
   Email,
@@ -110,11 +111,7 @@ function Dashboard() {
           value={data && data.user}
           increase="17%"
           description="Kể từ tháng trước"
-          icon={
-            <Email
-              xs={{ color: theme.palette.secondary[300], fontSize: '22px' }}
-            />
-          }
+          icon={<Email xs={{ color: theme.palette.secondary[300] }} />}
         />
         <StatBox
           title="Tổng số lượng đơn đặt"
@@ -123,7 +120,7 @@ function Dashboard() {
           description="Kể từ tháng trước"
           icon={
             <PointOfSale
-              xs={{ color: theme.palette.secondary[300], fontSize: '22px' }}
+              xs={{ color: theme.palette.secondary[300] }}
             />
           }
         />
@@ -135,11 +132,12 @@ function Dashboard() {
           borderRadius="0.55rem"
         >
           <Typography
-            p="5rem "
-            fontSize="4rem"
+            p="4rem "
+            fontSize="5rem"
+            className='content'
             sx={{ color: theme.palette.secondary[200] }}
           >
-            I'M THE BOSS
+            PM-TRAVEL
           </Typography>
         </Box>
         <StatBox
@@ -149,7 +147,7 @@ function Dashboard() {
           description="Kể từ tháng trước"
           icon={
             <PersonAdd
-              xs={{ color: theme.palette.secondary[300], fontSize: '22px' }}
+              xs={{ color: theme.palette.secondary[300] }}
             />
           }
         />
@@ -165,7 +163,7 @@ function Dashboard() {
           description="Kể từ tháng trước"
           icon={
             <Traffic
-              xs={{ color: theme.palette.secondary[300], fontSize: '22px' }}
+              xs={{ color: theme.palette.secondary[300] }}
             />
           }
         />

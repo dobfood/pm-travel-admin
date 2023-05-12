@@ -14,7 +14,7 @@ const LoginPage = () => {
         textAlign="center"
       >
         <Typography fontWeight="bold" fontSize="32px" color="secondary">
-          PM-Travel
+          PM-TRAVEL
         </Typography>
         <Box
         width={isNoneMobileScreens ? "50%" : "93%"}
