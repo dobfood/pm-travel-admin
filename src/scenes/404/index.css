@@ -1,0 +1,41 @@
+body {
+}
+
+.error-template {
+  padding: 40px 15px;
+  text-align: center;
+}
+
+.error-actions {
+  margin-top: 15px;
+  margin-bottom: 15px;
+}
+
+h1 {
+  font-size: 200px;
+  margin-bottom: 0;
+  color: #ffda85;
+}
+
+h2 {
+  font-size: 40px;
+  margin-top: 0;
+  margin-bottom: 10px;
+  color: #ffffff;
+}
+
+p {
+  font-size: 18px;
+  line-height: 1.5;
+  margin-bottom: 20px;
+  color: #ffffff;
+}
+
+button {
+  display: inline-block;
+  font-size: 16px;
+  padding: 10px 20px;
+  border-radius: 4px;
+  transition: background-color 0.5s;
+}
+
